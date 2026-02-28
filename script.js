@@ -26,15 +26,36 @@ function Gameboard() {
 
 }
 
-function Player(mark, name) {
+function Player(mark, nickname) {
 
     function getMark() { // closure for returning mark of player
         return mark
     }
 
-    function getName() { // closure for returning naem of player
-        return name;
+    function getName() { // closure for returning name of player
+        return nickname;
     }
     return { getMark, getName };
 }
 
+function gameController() {
+
+    const board = Gameboard(); // accessing board
+    const playerOne = Player("X", "DOMforX");
+    const playerTwo = Player("O", "DOMforO");
+    const players = [playerOne, playerTwo];
+
+    let currentPlayer = players[0];
+
+    function switchPlayers() {
+        currentPlayer = currentPlayer === players[0] ? players[1] : players[0] // checks  
+        // whats player now (default is players[0]) and switches to opposite
+    }
+
+    function getCurrentPlayer() { // getter of who is CP
+        return currentPlayer;
+    }
+
+
+
+}
