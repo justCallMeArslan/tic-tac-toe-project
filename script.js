@@ -32,10 +32,10 @@ function Player(mark, nickname) {
         return mark
     }
 
-    function getName() { // closure for returning name of player
+    function getNickname() { // closure for returning name of player
         return nickname;
     }
-    return { getMark, getName };
+    return { getMark, getNickname };
 }
 
 function gameController() {
@@ -57,5 +57,5 @@ function gameController() {
     }
 
 
-
+    return {switchPlayers, getCurrentPlayer}
 }
