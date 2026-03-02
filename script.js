@@ -23,7 +23,6 @@ function Gameboard(size = 3) {
             }
         }
 
-
         board[index] = mark;  // function runs, meansell is empty and we place mark
         return {
             status: true,
@@ -31,6 +30,33 @@ function Gameboard(size = 3) {
     }
     function getGrid() {
         return Object.freeze([...board]); // creates "frozen" mutated shallow copy of board
+    }
+
+
+    function winChecker() {
+        const winningLines = [
+            //rows 
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+
+            //columns
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+
+            //diagonal
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        for (const [a, b, c] of winningLines) {
+            // comparing a, b, c that they are not empty and the same X or O
+            if (board[a] && board[a] === board[b] && board[a] === board[c]) { 
+                return board[a]; // return X or O as a mark of winner
+            }
+        }
+        return null; // if no winner on the board 
     }
 
     return { placeMark, getGrid, resetBoard }; // returns for usage in gameController
