@@ -1,7 +1,7 @@
 
 
 function Gameboard() {
-    const cols = 3; // values hardcoded intentionally for study project and being 99% of games grid
+    const cols = 3; // values hardcoded intentionally for study project
     const rows = 3;
 
     let board = Array(cols * rows).fill(""); // fill the grid of the game 3x3
@@ -37,13 +37,11 @@ function Gameboard() {
             status: true,
         }
     }
-
     // checking for grid status isFull or Not?
     function isFull() {
         return !board.includes(""); //when board full we get return board NOT include "", any other 
         // time if we call function we recieve false
     }
-
     // getter for grid
     function getGrid() {
         return Object.freeze([...board]); // creates "frozen" mutated shallow copy of board, only for 
@@ -51,7 +49,6 @@ function Gameboard() {
     }
     return { placeMark, getGrid, resetBoard, isFull }; // returns for usage in gameController
 }
-
 
 function winChecker(grid) {
     const winningLines = [
@@ -80,7 +77,6 @@ function winChecker(grid) {
 }
 
 // test of Gameboard() functionallity
-
 // const board = Gameboard();
 
 // board.placeMark(0, "X"); // mark placed
@@ -106,10 +102,10 @@ function winChecker(grid) {
 function Player(mark, nickname) {
 
     //adding validation for nickname
-    if (!/^[a-zA-Z]+$/.test(nickname)){
-        throw new Error ("Invalid characters used.  Only latin letters allowed.")
+    if (!/^[a-zA-Z]+$/.test(nickname)) {
+        throw new Error("Invalid characters used.  Only latin letters allowed.")
     }
-
+    
     function getMark() { // closure for returning mark of player
         return mark
     }
