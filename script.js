@@ -50,7 +50,7 @@ function Gameboard() {
     return { placeMark, getGrid, resetBoard, isFull }; // returns for usage in gameController
 }
 
-function winChecker(grid) {
+function winChecker(boardInPlay) {
     const winningLines = [
         //rows 
         [0, 1, 2],
@@ -69,8 +69,8 @@ function winChecker(grid) {
 
     for (const [a, b, c] of winningLines) {
         // comparing a, b, c that they are not empty and the same X or O
-        if (grid[a] && grid[a] === grid[b] && grid[a] === grid[c]) {
-            return grid[a]; // return X or O as a mark of winner
+        if (boardInPlay[a] && boardInPlay[a] === boardInPlay[b] && boardInPlay[a] === boardInPlay[c]) {
+            return boardInPlay[a]; // return X or O as a mark of winner
         }
     }
     return null; // if no winner on the board 
@@ -93,9 +93,6 @@ function winChecker(grid) {
 // board.placeMark(8, "O"); // filled with no winner, returns full
 // // board.resetBoard(); // board is empty
 
-// const grid = board.getGrid();
-// console.log(winChecker(grid));
-// console.log(grid);
 
 
 
@@ -103,41 +100,89 @@ function Player(mark, nickname) {
 
     //adding validation for nickname
     if (!/^[a-zA-Z]+$/.test(nickname)) {
-        throw new Error("Invalid characters used.  Only latin letters allowed.")
+        throw new Error("Invalid characters used. Only latin letters allowed.")
     }
-    
     function getMark() { // closure for returning mark of player
         return mark
     }
-
     function getNickname() { // closure for returning name of player
         return nickname
     }
-
     return { getMark, getNickname };
 }
+
 
 
 
 function gameController() {
 
     const board = Gameboard(); // accessing board
-    const playerOne = Player("X", "DOMforX");
-    const playerTwo = Player("O", "DOMforO");
+    const playerOne = Player("X", "DOMforX"); // nickname is going to be changed by DOM 
+    const playerTwo = Player("O", "DOMforO"); // nickname is going to be changed by DOM 
     const players = [playerOne, playerTwo];
 
     let currentPlayer = players[0];
 
     function switchPlayers() {
         currentPlayer = currentPlayer === players[0] ? players[1] : players[0] // checks  
-        // whats player now (default is players[0]) and switches to opposite
+        // what is player now (default is players[0]) and switches to opposite
     }
 
     function getCurrentPlayer() { // getter of who is CP
         return currentPlayer;
     }
+    let gameOver = false; // tumbler when game should allow makeMove 
 
+    // attmempting to place mark,
+    function makeMove(index) {
+        if (gameOver === true) {
+            return {
+                status: "endOfGame",
+                mark: "",
+                nickname: "",
+                nextPlayer: ""
+            }
+        }
+        const result = board.placeMark(index, currentPlayer.getMark());
+        if (result.status === false) {
+            return result;
+        }
 
+        // checking for winner
+        const winner = winChecker(board.getGrid())
+        if (winner !== null) {
+            gameOver = true;
+            return {
+                status: "win",
+                mark: winner,
+                nickname: currentPlayer.getNickname(),
+                nextPlayer: ""
+            };
+        } else if ((board.isFull())) {
+            gameOver = true
+            return {
+                status: "tie",
+                mark: "",
+                nickname: "",
+                nextPlayer: ""
+            }
+        } else {
+            switchPlayers();
+            return {
+                status: "progress",
+                mark: "",
+                nickname: "",
+                nextPlayer: currentPlayer.getNickname()
+            }
 
-    return { switchPlayers, getCurrentPlayer }
+        }
+    }
+    function resetGame() {
+        board.resetBoard();
+        gameOver = false;
+        currentPlayer = players[0];
+    }
+
+    return { getCurrentPlayer, makeMove, resetGame }
+
 }
