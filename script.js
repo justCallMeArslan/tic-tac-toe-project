@@ -32,20 +32,18 @@ function Gameboard() {
                 reason: "Cell is not empty"
             }
         }
-        board[index] = mark;  // function runs, meansell is empty and we place mark
+        board[index] = mark;  // all validation passed, mark being placed
         return {
             status: true,
         }
     }
     // checking for grid status isFull or Not?
     function isFull() {
-        return !board.includes(""); //when board full we get return board NOT include "", any other 
-        // time if we call function we recieve false
+        return !board.includes(""); // return true, when there is no empty cells left.
     }
     // getter for grid
     function getGrid() {
-        return Object.freeze([...board]); // creates "frozen" mutated shallow copy of board, only for 
-        // array
+        return Object.freeze([...board]); // creates mutated shallow copy of board, and freezes it.
     }
     return { placeMark, getGrid, resetBoard, isFull }; // returns for usage in gameController
 }
@@ -99,28 +97,34 @@ function winChecker(boardInPlay) {
 function Player(mark, nickname) {
 
     //adding validation for nickname
-    if (!/^[a-zA-Z]+$/.test(nickname)) {
-        throw new Error("Invalid characters used. Only latin letters allowed.")
-    }
+    const isValid = /^[a-zA-Z]+$/.test(nickname); //returns true/false
     function getMark() { // closure for returning mark of player
         return mark
     }
     function getNickname() { // closure for returning name of player
         return nickname
     }
-    return { getMark, getNickname };
+    return { getMark, getNickname, isValid };
 }
 
 
 
 
 function gameController() {
-
-    const board = Gameboard(); // accessing board
+    const board = Gameboard(); 
     const playerOne = Player("X", "DOMforX"); // nickname is going to be changed by DOM 
     const playerTwo = Player("O", "DOMforO"); // nickname is going to be changed by DOM 
-    const players = [playerOne, playerTwo];
+    if (!playerOne.isValid || !playerTwo.isValid) {
+        return {
+            status: "Invalid players",
+            reason: "Need use proper characters in nickname",
+            mark: "",
+            nickname: "",
+            nextPlayer: ""
+        }
+    }
 
+    const players = [playerOne, playerTwo];
     let currentPlayer = players[0];
 
     function switchPlayers() {
@@ -131,13 +135,14 @@ function gameController() {
     function getCurrentPlayer() { // getter of who is CP
         return currentPlayer;
     }
-    let gameOver = false; // tumbler when game should allow makeMove 
+    let gameOver = false; // flag when game should or shouldn't allow makeMove
 
     // attmempting to place mark,
     function makeMove(index) {
         if (gameOver === true) {
             return {
                 status: "endOfGame",
+                reason: "Game over",
                 mark: "",
                 nickname: "",
                 nextPlayer: ""
@@ -154,6 +159,7 @@ function gameController() {
             gameOver = true;
             return {
                 status: "win",
+                reason: "Winner declared.",
                 mark: winner,
                 nickname: currentPlayer.getNickname(),
                 nextPlayer: ""
@@ -162,6 +168,7 @@ function gameController() {
             gameOver = true
             return {
                 status: "tie",
+                reason: "Tie declared",
                 mark: "",
                 nickname: "",
                 nextPlayer: ""
@@ -170,6 +177,7 @@ function gameController() {
             switchPlayers();
             return {
                 status: "progress",
+                reason: "End of round",
                 mark: "",
                 nickname: "",
                 nextPlayer: currentPlayer.getNickname()
@@ -177,7 +185,7 @@ function gameController() {
 
         }
     }
-    function resetGame() {
+    function resetGame() { // reset function for UI implementation
         board.resetBoard();
         gameOver = false;
         currentPlayer = players[0];
