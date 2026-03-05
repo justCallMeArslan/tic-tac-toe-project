@@ -1,5 +1,4 @@
 
-
 function Gameboard() {
     const cols = 3; // values hardcoded intentionally for study project
     const rows = 3;
@@ -111,16 +110,15 @@ function Player(mark, nickname) {
 
 
 function gameController() {
-    const board = Gameboard(); 
+    const board = Gameboard();
     const playerOne = Player("X", "DOMforX"); // nickname is going to be changed by DOM 
     const playerTwo = Player("O", "DOMforO"); // nickname is going to be changed by DOM 
     if (!playerOne.isValid || !playerTwo.isValid) {
         return {
-            status: "Invalid players",
-            reason: "Need use proper characters in nickname",
-            mark: "",
-            nickname: "",
-            nextPlayer: ""
+            type: "INVALID_MOVE",
+            scope: {
+                reason: "Only latin alphabet allowed",
+            }
         }
     }
 
@@ -141,11 +139,7 @@ function gameController() {
     function makeMove(index) {
         if (gameOver === true) {
             return {
-                status: "endOfGame",
-                reason: "Game over",
-                mark: "",
-                nickname: "",
-                nextPlayer: ""
+                type: "GAME_OVER"
             }
         }
         const result = board.placeMark(index, currentPlayer.getMark());
@@ -158,29 +152,23 @@ function gameController() {
         if (winner !== null) {
             gameOver = true;
             return {
-                status: "win",
-                reason: "Winner declared.",
-                mark: winner,
-                nickname: currentPlayer.getNickname(),
-                nextPlayer: ""
+                type: "WIN",
+                scope: {
+                    mark: winner,
+                    nickname: currentPlayer.getNickname()
+                }
+
             };
         } else if ((board.isFull())) {
             gameOver = true
             return {
-                status: "tie",
-                reason: "Tie declared",
-                mark: "",
-                nickname: "",
-                nextPlayer: ""
+                type: "TIE"
             }
         } else {
             switchPlayers();
             return {
-                status: "progress",
-                reason: "End of round",
-                mark: "",
-                nickname: "",
-                nextPlayer: currentPlayer.getNickname()
+                type: "PLAYING",
+                scope: { nextPlayer: currentPlayer.getNickname() }
             }
 
         }
