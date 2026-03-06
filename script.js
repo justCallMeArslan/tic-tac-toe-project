@@ -112,7 +112,7 @@ function gameController() {
         // what is player now (default is players[0]) and switches to opposite
     }
 
-    function getCurrentPlayer() { // getter of who is CP
+    function getCurrentPlayer() { // can be used in DOM / may remove if unused 
         return currentPlayer;
     }
 
@@ -142,7 +142,7 @@ function gameController() {
         const roundWinner = roundWin(board.getGrid())
         if (roundWinner !== null) {
             scores[roundWinner] += 1;
-            matchWinner();
+            matchWinner(); //should i make here const to store this data or not? if yes, why?
             resetRound();
             gameOver = true;
             return {
@@ -172,7 +172,7 @@ function gameController() {
         } else if (scores[playerTwo.getMark()] === 3) {
             return playerTwo.getNickname() + 'wins the game';
         }
-        return null;
+        return null; // null means game is not ended, keep playing
     }
 
 
