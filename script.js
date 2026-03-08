@@ -161,7 +161,9 @@ function gameController() {
             switchPlayers();
             return {
                 type: "PLAYING",
-                scope: { nextPlayer: currentPlayer.getNickname() }
+                scope: {
+                    nextPlayer: currentPlayer.getNickname()
+                }
             }
         }
     }
@@ -195,22 +197,5 @@ function gameController() {
     return { getCurrentPlayer, makeMove, resetGame }
 }
 
-
-// test of Gameboard() functionallity
-// const board = Gameboard();
-
-// board.placeMark(0, "X"); // mark placed
-// board.placeMark(20, "O"); // invalid index
-// board.placeMark(0, "X"); // Cell is not empty
-// board.placeMark(2, "Z"); // Invalid mark
-// board.placeMark(1, "O");
-// board.placeMark(2, "O");
-// board.placeMark(3, "O");
-// board.placeMark(4, "X");
-// board.placeMark(5, "O");
-// board.placeMark(6, "O");
-// board.placeMark(7, "X");
-// board.placeMark(8, "O"); // filled with no winner, returns full
-// // board.resetBoard(); // board is empty
 
 
