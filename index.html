@@ -25,10 +25,16 @@
     <button class="new-game">New game</button>
     <dialog class="pop-up-form">
         <form class="playersContainer">
-            input nickname for p1
-            input nickname for p2
+            <label for="playerOne">P1 nickname:</label>
+            <input type="text" name="p1-nickname" id="p1-nickname" required>
+            <label for="playerTwo">P2 nickname</label>
+            <input type="text" name="p2-nickname" id="p2-nickname" required>
 
-            2 choose for X or O
+            <div class="markChoice">
+                <button type="button">X</button>
+                <p>or</p>
+                <button type="button">O</button>
+            </div>
 
             <button type="submit">Submit</button>
         </form>
