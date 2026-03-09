@@ -17,7 +17,7 @@ function Gameboard() {
                 reason: "Invalid index"
             }
         }
-        // adding mark validation for "X" and "O" only allowed
+        // adding mark validation for "X" and "O" only allowed (will be deleted after DDM)
         if (mark !== "X" && mark !== "O") {
             return {
                 status: false,
@@ -58,7 +58,7 @@ function Player(mark, nickname) {
         return nickname
     }
 
-    function getPlayerCard() {
+    function getPlayerCard() { // set for displaying winner 
         return { mark, nickname }
     }
     return { getMark, getNickname, getPlayerCard, isValid };
@@ -100,7 +100,7 @@ function gameController() {
         return {
             type: "INVALID_PLAYER",
             scope: {
-                reason: "Only latin alphabet allowed",
+                reason: "Please, use latin alphabet",
             }
         }
     }
