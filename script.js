@@ -58,13 +58,10 @@ function Player(mark, nickname) {
         return nickname
     }
 
-    function getPlayerCard() { // set for displaying winner 
-        return { mark, nickname }
-    }
-    return { getMark, getNickname, getPlayerCard, isValid };
+    return { getMark, getNickname, isValid };
 }
 
-function roundWin(boardInPlay) {
+function evaluateRound(boardInPlay) {
     const winningLines = [
         //rows 
         [0, 1, 2],
@@ -83,11 +80,23 @@ function roundWin(boardInPlay) {
 
     for (const [a, b, c] of winningLines) {
         // comparing a, b, c that they are not empty and the same X or O
-        if (boardInPlay[a] && boardInPlay[a] === boardInPlay[b] && boardInPlay[a] === boardInPlay[c]) {
-            return boardInPlay[a]; // return X or O as a mark of round winner
+        if (boardInPlay[a] && boardInPlay[a] === boardInPlay[b]
+            && boardInPlay[a] === boardInPlay[c]) {
+            return {
+                type: "ROUND_WIN",
+                winner: boardInPlay[a],
+            }
         }
     }
-    return null; // if no round winner on the board 
+    if ((!boardInPlay.includes(""))) {
+        return {
+            type: "ROUND_TIE"
+        }
+    } else {
+        return {
+            type: "ROUND_PLAYING"
+        }
+    }
 }
 
 
@@ -99,9 +108,7 @@ function gameController() {
     if (!playerOne.isValid || !playerTwo.isValid) {
         return {
             type: "INVALID_PLAYER",
-            scope: {
-                reason: "Please, use latin alphabet",
-            }
+            reason: "Please, use latin alphabet",
         }
     }
     const players = [playerOne, playerTwo];
@@ -122,13 +129,17 @@ function gameController() {
         O: 0,
     }
 
+    function getScores() {
+        return { ...scores }; // shallow copy of scores
+    }
+
     let gameOver = false; // flag when game should or shouldn't allow makeMove
 
     // attmempting to place mark,
     function makeMove(index) {
         if (gameOver === true) {
             return {
-                type: "GAME_OVER"
+                type: "GAME_STOP"
             }
         }
 
@@ -139,49 +150,60 @@ function gameController() {
         }
 
         // checking for winner
-        const roundWinner = roundWin(board.getGrid())
-        if (roundWinner !== null) {
-            scores[roundWinner] += 1;
-            matchWinner(); //should i make here const to store this data or not? if yes, why?
-            resetRound();
-            gameOver = true;
-            return {
-                type: "WIN",
-                scope: {
-                    mark: roundWinner,
-                    nickname: currentPlayer.getNickname()
-                }
-            };
-        } else if ((board.isFull())) {
-            gameOver = true
-            return {
-                type: "TIE"
+        const roundWinner = evaluateRound(board.getGrid());
+        if (roundWinner.type === "ROUND_WIN") {
+            scores[roundWinner.winner] += 1;
+
+            //check if match is won
+            const matchWinner = evaluateMatch();
+            if (matchWinner.type === "MATCH_WIN") {
+                gameOver = true;
+                return matchWinner; // will return evaluateMatch() return obj
             }
-        } else {
-            switchPlayers();
+
+            // return after Round win
             return {
-                type: "PLAYING",
-                scope: {
-                    nextPlayer: currentPlayer.getNickname()
-                }
+                type: "ROUND_WIN",
+                mark: roundWinner.winner,
+                nickname: currentPlayer.getNickname()
+            };
+        }
+        if (roundWinner.type === "ROUND_TIE") {
+            return {
+                type: "ROUND_TIE" // UI event listener e.g. will click and reset (when needed)
             }
         }
+
+        // no winner, round in progress
+        switchPlayers();
+        return {
+            type: "ROUND_PLAYING",
+            nextPlayer: currentPlayer.getNickname()
+        };
     }
 
-    function matchWinner() {
+    function evaluateMatch() {
         if (scores[playerOne.getMark()] === 3) {
-            return playerOne.getNickname() + 'wins the game';
+            return {
+                type: "MATCH_WIN",
+                nickname: playerOne.getNickname(),
+                mark: playerOne.getMark()
+            }
         } else if (scores[playerTwo.getMark()] === 3) {
-            return playerTwo.getNickname() + 'wins the game';
+            return {
+                type: "MATCH_WIN",
+                nickname: playerTwo.getNickname(),
+                mark: playerTwo.getMark()
+            }
         }
-        return null; // null means game is not ended, keep playing
+
     }
 
 
     function resetRound() { // reset function after round
         board.resetBoard();
-        gameOver = false;
-        currentPlayer = players[0];
+        currentPlayer = Math.random() > 0.5 ? players[0] : players[1]; // after first 
+        // round randomize first turn
     }
 
     function resetGame() { // staged for UI game reset (probably merger New Game button functionality)
@@ -194,8 +216,6 @@ function gameController() {
     }
 
 
-    return { getCurrentPlayer, makeMove, resetGame }
+    return { getCurrentPlayer, makeMove, resetGame, resetRound, getScores }
+
 }
-
-
-
