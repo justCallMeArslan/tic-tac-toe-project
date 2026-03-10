@@ -215,7 +215,10 @@ function gameController() {
         scores.O = 0;
     }
 
-
     return { getCurrentPlayer, makeMove, resetGame, resetRound, getScores }
 
 }
+
+
+
+//testing part
