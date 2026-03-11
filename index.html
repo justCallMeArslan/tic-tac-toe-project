@@ -22,25 +22,24 @@
         <div class="cell8"></div>
     </div>
 
-    <button class="new-game">New game</button>
-    <dialog class="pop-up-form">
-        <form class="playersContainer">
-            <label for="playerOne">P1 nickname:</label>
-            <input type="text" name="p1-nickname" id="p1-nickname" required>
-            <label for="playerTwo">P2 nickname</label>
-            <input type="text" name="p2-nickname" id="p2-nickname" required>
-
-            <div class="markChoice">
-                <button type="button">X</button>
-                <p>or</p>
-                <button type="button">O</button>
-            </div>
-
-            <button type="submit">Submit</button>
-        </form>
-
-    </dialog>
-    <button type="button">Restart game</button>
+    <div>
+        <button class="new-game-btn">New game</button>
+        <dialog class="form-pop-up">
+            <form class="playersContainer">
+                <label for="playerOne">P1 nickname:</label>
+                <input type="text" name="p1-nickname" id="p1-nickname" required>
+                <label for="playerTwo">P2 nickname</label>
+                <input type="text" name="p2-nickname" id="p2-nickname" required>
+                <div class="markChoice">
+                    <button type="button">X</button>
+                    <p>or</p>
+                    <button type="button">O</button>
+                </div>
+                <button type="submit" class="close-modal">Submit</button>
+            </form>
+        </dialog>
+        <button type="button">Restart game</button>
+    </div>
 
 </body>
 
