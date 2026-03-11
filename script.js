@@ -1,3 +1,7 @@
+const newGameBtn = document.querySelector(".new-game-btn");
+const closeModal = document.querySelector(".close-modal");
+const modal = document.querySelector(".form-pop-up");
+
 
 function Gameboard() {
     const cols = 3; // values hardcoded intentionally for study project
@@ -222,3 +226,19 @@ function gameController() {
 
 
 //testing part
+
+
+
+
+
+// DOM part
+
+// opening fomr for players info input
+
+
+newGameBtn.addEventListener('click', function () {
+    modal.showModal();
+})
+closeModal.addEventListener('click', function () {
+    modal.close();
+})
