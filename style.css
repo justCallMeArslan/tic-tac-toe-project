@@ -71,9 +71,10 @@ h6 {
   display: grid;
   width: 500px;
   height: 500px;
-  background-color: black;
+  background-color: white;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
+  padding: 30px;
 }
 
 .game-container div {
@@ -100,3 +101,5 @@ h6 {
   display: flex;
   flex-direction: column;
 }
+
+
