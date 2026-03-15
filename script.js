@@ -3,8 +3,9 @@ const closeModal = document.querySelector(".close-modal");
 const modal = document.querySelector(".form-pop-up");
 
 
-function Gameboard() {
-    const cols = 3; // values hardcoded intentionally for study project
+function Gameboard() { // values hardcoded intentionally for study project, keeping in 
+    // mind refactoring later for dynamic
+    const cols = 3;
     const rows = 3;
 
     let board = Array(cols * rows).fill(""); // fill the grid of the game 3x3
@@ -200,9 +201,7 @@ function gameController() {
                 mark: playerTwo.getMark()
             }
         }
-
     }
-
 
     function resetRound() { // reset function after round
         board.resetBoard();
@@ -226,6 +225,10 @@ function gameController() {
 
 
 //testing part
+
+
+
+
 
 
 
