@@ -74,8 +74,8 @@ h6 {
 
 .game-container {
   display: grid;
-  width: 450px;
-  height: 450px;
+  width: 400px;
+  height: 400px;
   background-color: white;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
@@ -115,7 +115,7 @@ h6 {
 
 .controls {
   display: flex;
-  gap: 16px;
+  gap: 5px;
   flex-direction: column;
 }
 
@@ -125,6 +125,8 @@ form>p {
 
 .btn {
   width: 94px;
+  border-radius: 12px;
+  border: 1px solid black;
 }
 
 .p1-cont,
