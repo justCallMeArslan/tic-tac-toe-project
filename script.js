@@ -52,10 +52,19 @@ function Gameboard() { // values hardcoded intentionally for study project, keep
     return { placeMark, getGrid, resetBoard, isFull }; // returns for usage in gameController
 }
 
+
+function validateNickname(nickname) { //function to check 
+    return /^[a-zA-Z\s]+$/.test(nickname);
+}
+
 function Player(mark, nickname) {
 
-    //adding validation for nickname
-    const isValid = /^[a-zA-Z]+$/.test(nickname); //returns true/false
+    // adding validation if there is name or not (existance)
+
+    if (!nickname) {
+        return { type: "ERROR", reason: "Nickname missing" };
+    }
+
     function getMark() { // closure for returning mark of player
         return mark
     }
@@ -108,14 +117,19 @@ function evaluateRound(boardInPlay) {
 function gameController() {
     const board = Gameboard();
 
-    const playerOne = Player("X", "DOMforX"); // nickname is going to be changed by DOM 
-    const playerTwo = Player("O", "DOMforO"); // nickname is going to be changed by DOM 
+    // DOM for inputs of both player !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+    // validation should be changed as per validateNickname()
     if (!playerOne.isValid || !playerTwo.isValid) {
         return {
             type: "INVALID_PLAYER",
             reason: "Please, use latin alphabet",
         }
     }
+
+    const playerOne = Player("X", "DOMforX"); // nickname is going to be changed by DOM 
+    const playerTwo = Player("O", "DOMforO"); // nickname is going to be changed by DOM 
     const players = [playerOne, playerTwo];
     let currentPlayer = players[0];
 
