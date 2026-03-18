@@ -18,27 +18,27 @@ function Gameboard() { // values hardcoded intentionally for study project, keep
         //adding validation from invalid index e.g {100, "X"}
         if (index < 0 || index >= board.length) {
             return {
-                status: false,
+                type: false,
                 reason: "Invalid index"
             }
         }
         // adding mark validation for "X" and "O" only allowed (will be deleted after DDM)
         if (mark !== "X" && mark !== "O") {
             return {
-                status: false,
+                type: false,
                 reason: "Invalid mark"
             }
         }
         // adding validation to prevent marking already marked cell
         if (board[index] !== "") {
             return {
-                status: false,
+                type: false,
                 reason: "Cell is not empty"
             }
         }
         board[index] = mark;  // all validation passed, mark being placed
         return {
-            status: true,
+            type: true,
         }
     }
     // checking for grid status isFull or Not?
@@ -47,7 +47,7 @@ function Gameboard() { // values hardcoded intentionally for study project, keep
     }
     // getter for grid
     function getGrid() {
-        return Object.freeze([...board]); // creates mutated shallow copy of board, and freezes it.
+        return [...board]; // creates mutated shallow copy of board, and freezes it.
     }
     return { placeMark, getGrid, resetBoard, isFull }; // returns for usage in gameController
 }
@@ -150,7 +150,7 @@ function gameController() {
 
         //placing mark until success
         const result = board.placeMark(index, currentPlayer.getMark());
-        if (result.status === false) {
+        if (result.type === false) {
             return result;
         }
 
