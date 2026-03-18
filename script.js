@@ -19,21 +19,21 @@ function Gameboard() { // values hardcoded intentionally for study project, keep
         if (index < 0 || index >= board.length) {
             return {
                 type: false,
-                reason: "Invalid index"
+                reason: "INVALID_INPUT"
             }
         }
         // adding mark validation for "X" and "O" only allowed (will be deleted after DDM)
         if (mark !== "X" && mark !== "O") {
             return {
                 type: false,
-                reason: "Invalid mark"
+                reason: "INVALID_INPUT"
             }
         }
         // adding validation to prevent marking already marked cell
         if (board[index] !== "") {
             return {
                 type: false,
-                reason: "Cell is not empty"
+                reason: "INVALID_MOVE"
             }
         }
         board[index] = mark;  // all validation passed, mark being placed
@@ -139,13 +139,21 @@ function gameController() {
     }
 
     let gameOver = false; // flag when game should or shouldn't allow makeMove
+    let roundActive = true; // flag to allow/forbid moves after round ends
+
 
     // attmempting to place mark,
     function makeMove(index) {
-        if (gameOver === true) {
+        if (gameOver) { // if true = match ended
             return {
-                type: "GAME_STOP"
-            }
+                type: "MATCH_ENDED"
+            };
+        }
+
+        if (!roundActive) { // if not true = false = round eded
+            return {
+                type: "ROUND_ENDED"
+            };
         }
 
         //placing mark until success
@@ -158,7 +166,7 @@ function gameController() {
         const roundWinner = evaluateRound(board.getGrid());
         if (roundWinner.type === "ROUND_WIN") {
             scores[roundWinner.winner] += 1;
-
+            roundActive = false;
             //check if match is won
             const matchWinner = evaluateMatch();
             if (matchWinner.type === "MATCH_WIN") {
@@ -166,7 +174,7 @@ function gameController() {
                 return matchWinner; // will return evaluateMatch() return obj
             }
 
-            // return after Round win
+            // return after Round win, UI decides reset (click to reset or some other behavior)
             return {
                 type: "ROUND_WIN",
                 mark: roundWinner.winner,
@@ -174,6 +182,7 @@ function gameController() {
             };
         }
         if (roundWinner.type === "ROUND_TIE") {
+            roundActive = false;
             return {
                 type: "ROUND_TIE" // UI event listener e.g. will click and reset (when needed)
             }
