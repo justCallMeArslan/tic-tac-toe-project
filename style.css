@@ -121,8 +121,8 @@ form>p {
   border: 1px solid black;
 }
 
-.p1-cont,
-.p2-cont {
+.p1-box,
+.p2-box {
   width: 130px;
   padding-top: 45px;
 }
