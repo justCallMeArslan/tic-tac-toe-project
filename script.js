@@ -60,7 +60,6 @@ function validateNickname(nickname) { //function to check
 }
 
 function Player(mark, nickname) {
-
     function getMark() { // closure for returning mark of player
         return mark
     }
