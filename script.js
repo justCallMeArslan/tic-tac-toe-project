@@ -71,7 +71,7 @@ function Player(mark, nickname) {
 }
 
 function evaluateRound(board) {
-    const grid = board.getGrid()
+    const grid = board.getGrid();
 
     const winningLines = [
         //rows 
@@ -138,15 +138,12 @@ function gameController(nicknameP1, nicknameP2) {
         currentPlayer = currentPlayer === players[0] ? players[1] : players[0] // checks  
         // what is player now (default is players[0]) and switches to opposite
     }
-
     function getCurrentPlayer() { // can be used in DOM / may remove if unused 
         return currentPlayer;
     }
-
     function getScores() {
         return { ...scores }; // shallow copy of scores
     }
-
     // attmempting to place mark,
     function makeMove(index) {
         if (gameOver) { // if true = match ended
@@ -171,7 +168,7 @@ function gameController(nicknameP1, nicknameP2) {
         const roundWinner = evaluateRound(board);
         if (roundWinner.type === "ROUND_WIN") {
             scores[roundWinner.winner] += 1;
-            roundActive = false; //end of round
+            roundActive = false; //end of round              
             //check if match is won
             const matchWinner = evaluateMatch();
             if (matchWinner.type === "MATCH_WIN") {
@@ -225,7 +222,7 @@ function gameController(nicknameP1, nicknameP2) {
         board.resetBoard();
         roundActive = true;
         currentPlayer = Math.random() > 0.5 ? players[0] : players[1]; // after first 
-        // round randomize first turn
+        // round randomize first player
     }
 
     function resetGame() { // staged for UI game reset (probably merger New Game button functionality)
