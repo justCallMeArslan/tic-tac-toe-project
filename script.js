@@ -1,6 +1,6 @@
-// const newGameBtn = document.querySelector(".new-game-btn");
-// const closeModal = document.querySelector(".close-modal");
-// const modal = document.querySelector(".form-pop-up");
+const newGameBtn = document.querySelector(".new-game-btn");
+const closeModal = document.querySelector(".close-modal");
+const modal = document.querySelector(".form-pop-up");
 // const pOneNickname = document.querySelector("#p1-nickname");
 // const pTwoNickname = document.querySelector("#p2-nickname");
 
@@ -244,12 +244,12 @@ function gameController(nicknameP1, nicknameP2) {
 
 // DOM part
 
-// opening fomr for players info input
 
 
-// newGameBtn.addEventListener('click', function () {
-//     modal.showModal();
-// })
-// closeModal.addEventListener('click', function () {
-//     modal.close();
-// })
+
+newGameBtn.addEventListener('click', function () {
+    modal.showModal();
+})
+closeModal.addEventListener('click', function () {
+    modal.close();
+})
