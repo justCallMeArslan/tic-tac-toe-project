@@ -1,8 +1,15 @@
 const newGameBtn = document.querySelector(".new-game-btn");
-const closeModal = document.querySelector(".close-modal");
 const modal = document.querySelector(".form-pop-up");
-// const pOneNickname = document.querySelector("#p1-nickname");
-// const pTwoNickname = document.querySelector("#p2-nickname");
+const form = document.querySelector(".players-container");
+const cells = document.querySelectorAll(".cell");
+const p1Name = document.querySelector(".p1-para");
+const p1Score = document.querySelector(".p1-score");
+const p2Name = document.querySelector(".p2-para");
+const p2Score = document.querySelector(".p2-score");
+const p1Nickname = document.querySelector("#p1-nickname");
+const p2Nickname = document.querySelector("#p2-nickname");
+const x = document.querySelector(".mark-x");
+const o = document.querySelector(".mark-o");
 
 
 function Gameboard() { // values hardcoded intentionally for study project, keeping in 
@@ -111,7 +118,7 @@ function evaluateRound(board) {
 }
 
 
-function gameController(nicknameP1, nicknameP2) {
+function gameController(mark1, mark2, nicknameP1, nicknameP2) {
     const board = Gameboard();
 
     if (!validateNickname(nicknameP1) || !validateNickname(nicknameP2)) {
@@ -121,8 +128,9 @@ function gameController(nicknameP1, nicknameP2) {
         }
     }
 
-    const playerOne = Player("X", nicknameP1); // nickname is going to be changed by DOM 
-    const playerTwo = Player("O", nicknameP2); // nickname is going to be changed by DOM 
+    const playerOne = Player(mark1, nicknameP1);
+    const playerTwo = Player(mark2, nicknameP2);
+    console.log("Player 1 mark:", mark1, "Player 2 mark:", mark2);
     const players = [playerOne, playerTwo];
     let currentPlayer = players[0];
 
@@ -146,6 +154,7 @@ function gameController(nicknameP1, nicknameP2) {
     }
     // attmempting to place mark,
     function makeMove(index) {
+
         if (gameOver) { // if true = match ended
             return {
                 type: "MATCH_ENDED"
@@ -196,6 +205,7 @@ function gameController(nicknameP1, nicknameP2) {
             type: "ROUND_PLAYING",
             nextPlayer: currentPlayer.getNickname()
         };
+
     }
 
     function evaluateMatch() {
@@ -244,12 +254,115 @@ function gameController(nicknameP1, nicknameP2) {
 
 // DOM part
 
+let game = null;
+
+function renderBoard() {
+
+    if (game === null) { // if there is no game started - stop function
+        return
+    };
+
+    const grid = game.getBoard().getGrid();  // reads data from on-going game grid
+
+    cells.forEach(cell => {
+        const index = Number(cell.dataset.index); // dataset is the way to get information from data-index
+        cell.textContent = grid[index]; // reflects grid in UI
+    })
+}
+
+
+cells.forEach(cell => {
+    cell.addEventListener("click", () => {
+        if (game === null) {
+            return
+        }
+
+        const index = Number(cell.dataset.index); // index which was clicked
+
+        const move = game.makeMove(index); // placing mark after recieving index of what pressed
+
+        renderBoard(); // to update UI after each move made
+        handleResult(move)
+    })
+})
+
+
+function handleResult(result) {
+    switch (result.type) {
+        case "ROUND_WIN":
+            alert(`${result.nickname} won the round`);
+            break;
+        case "ROUND_TIE":
+            alert("Round tied!");
+            break;
+        case "MATCH_WIN":
+            alert(`${result.nickname} is the absolute WINNER!`);
+            break;
+        case "INVALID_MOVE":
+            console.log("Invalid move");
+            break;
+        case "ROUND_ENDED":
+            console.log("No moves allowed until reset");
+            break;
+        case "MATCH_ENDED":
+            console.log("Start new game!");
+            break;
+    }
+}
+
+
+let selectedMark = null;
+
+x.addEventListener("click", () => {
+    selectedMark = "X";
+});
+
+o.addEventListener("click", () => {
+    selectedMark = "O";
+});
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault(); // stop page reload on background (on form button click)
+
+    const nicknameP1 = p1Nickname.value.trim(); // getting p1 nickname and trim spaces (start and end)
+    const nicknameP2 = p2Nickname.value.trim();
+
+
+    if (!selectedMark) {
+        alert("Please choose X or O before submitting!");
+        return;
+    }
+
+    if (!validateNickname(nicknameP1) || !validateNickname(nicknameP2)) {
+        alert("Please, use only latin letters, no symbols or numbers allowed");
+        return
+
+    }
+
+    const mark1 = selectedMark;
+    const mark2 = mark1 === "X" ? "O" : "X";
+
+
+    const newGame = gameController(mark1, mark2, nicknameP1, nicknameP2);
+
+    if (newGame.type === "INVALID_PLAYER") {
+        alert(newGame.reason);
+        return;
+    }
+
+
+    game = newGame; // changing game state from null to PLAYING
+
+    p1Name.textContent = `P1 nickname: ${nicknameP1}`;
+    p2Name.textContent = `P2 nickname: ${nicknameP2}`;
+
+
+    renderBoard(); // shows clean new board  
+    modal.close(); // close modal after submission
+})
 
 
 
 newGameBtn.addEventListener('click', function () {
     modal.showModal();
-})
-closeModal.addEventListener('click', function () {
-    modal.close();
 })

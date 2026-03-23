@@ -13,7 +13,7 @@
     <div class="main-container">
         <div class="p1-box">
             <p class="p1-para">P1 nickname: </p>
-            <p class="p1-score">Rounds won:</p>
+            <p class="p1-score">Rounds won: 0</p>
         </div>
         <div class="game-container">
             <div class="cell" data-index="0"></div>
@@ -28,7 +28,7 @@
         </div>
         <div class="p2-box">
             <p class="p2-para">P2 nickname:</p>
-            <p class="p2-score"> Rounds won: </p>
+            <p class="p2-score"> Rounds won: 0 </p>
         </div>
     </div>
 
@@ -36,17 +36,17 @@
         <button class="btn new-game-btn">New game</button>
         <dialog class="form-pop-up">
             <form class="players-container">
-                <label for="player-one">Player #1 nickname:</label>
+                <label for="p1-nickname">Player #1 nickname:</label>
                 <input type="text" name="p1-nickname" id="p1-nickname" required>
-                <label for="player-two">Player #2 nickname:</label>
+                <label for="p2-nickname">Player #2 nickname:</label>
                 <input type="text" name="p2-nickname" id="p2-nickname" required>
                 <p>Player #1 choose your mark:</p>
                 <div class="mark-choice">
-                    <button type="button">X</button>
+                    <button type="button" class="mark-x">X</button>
                     <p>or</p>
-                    <button type="button">O</button>
+                    <button type="button" class="mark-o">O</button>
                 </div>
-                <button type="submit" class="close-modal">Submit</button>
+                <button type="submit">Submit</button>
             </form>
         </dialog>
         <button class="btn" type="button">Reset game</button>
