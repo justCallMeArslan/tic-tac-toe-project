@@ -130,7 +130,6 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
 
     const playerOne = Player(mark1, nicknameP1);
     const playerTwo = Player(mark2, nicknameP2);
-    console.log("Player 1 mark:", mark1, "Player 2 mark:", mark2);
     const players = [playerOne, playerTwo];
     let currentPlayer = players[0];
 
@@ -331,13 +330,7 @@ form.addEventListener("submit", (e) => {
     if (!selectedMark) {
         alert("Please choose X or O before submitting!");
         return;
-    }
-
-    if (!validateNickname(nicknameP1) || !validateNickname(nicknameP2)) {
-        alert("Please, use only latin letters, no symbols or numbers allowed");
-        return
-
-    }
+    };
 
     const mark1 = selectedMark;
     const mark2 = mark1 === "X" ? "O" : "X";
