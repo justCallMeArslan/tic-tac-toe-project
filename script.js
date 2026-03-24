@@ -277,10 +277,18 @@ cells.forEach(cell => {
         }
 
         const index = Number(cell.dataset.index); // index which was clicked
-
         const move = game.makeMove(index); // placing mark after recieving index of what pressed
 
+        if (move.type === "ROUND_ENDED") { // controlled by roundActive flag
+            game.resetRound();
+            renderBoard();
+            return;
+        }
+
         renderBoard(); // to update UI after each move made
+        if (move.type === "ROUND_WIN") { // render updated scores after round end
+            renderScore();
+        }
         handleResult(move)
     })
 })
@@ -335,14 +343,12 @@ form.addEventListener("submit", (e) => {
     const mark1 = selectedMark;
     const mark2 = mark1 === "X" ? "O" : "X";
 
-
     const newGame = gameController(mark1, mark2, nicknameP1, nicknameP2);
 
     if (newGame.type === "INVALID_PLAYER") {
         alert(newGame.reason);
         return;
     }
-
 
     game = newGame; // changing game state from null to PLAYING
 
@@ -353,6 +359,13 @@ form.addEventListener("submit", (e) => {
     renderBoard(); // shows clean new board  
     modal.close(); // close modal after submission
 })
+
+function renderScore() {
+    const scores = game.getScores();
+
+    p1Score.textContent = `Rounds won: ${scores.X}`;
+    p2Score.textContent = `Rounds won: ${scores.O}`;
+}
 
 
 
