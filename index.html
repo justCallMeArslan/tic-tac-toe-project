@@ -12,7 +12,9 @@
 <body>
     <div class="main-container">
         <div class="p1-box">
-            <p class="p1-para">P1 nickname: </p>
+            <p>Player #1:</p>
+            <p class="p1-para">nickname</p>
+            <p class="p1-mark">Player #1 mark: </p>
             <p class="p1-score">Rounds won: 0</p>
         </div>
         <div class="game-container">
@@ -27,8 +29,10 @@
             <div class="cell" data-index="8"></div>
         </div>
         <div class="p2-box">
-            <p class="p2-para">P2 nickname:</p>
-            <p class="p2-score"> Rounds won: 0 </p>
+            <p>Player #1:</p>
+            <p class="p2-para">nickname:</p>
+            <p class="p2-mark">Player #2 mark: </p>
+            <p class="p2-score"> Rounds won: 0</p>
         </div>
     </div>
 
@@ -42,15 +46,18 @@
                 <input type="text" name="p2-nickname" id="p2-nickname" required>
                 <p>Player #1 choose your mark:</p>
                 <div class="mark-choice">
-                    <button type="button" class="mark-x">X</button>
+                    <button type="button" class="btn-form mark-x">X</button>
                     <p>or</p>
-                    <button type="button" class="mark-o">O</button>
+                    <button type="button" class=" btn-form mark-o">O</button>
                 </div>
-                <button type="submit">Submit</button>
+                <button class="btn-form" type="submit">Submit</button>
             </form>
         </dialog>
         <button class="btn reset-button" type="button">Reset game</button>
     </div>
+
+    <div class="turn-popup"></div>
+    <div class="win-popup"></div>
 
 </body>
 

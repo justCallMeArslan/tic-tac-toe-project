@@ -22,6 +22,7 @@ body {
   align-content: center;
   flex-direction: column;
   align-items: center;
+  background-color: white;
 }
 
 img,
@@ -72,6 +73,8 @@ h6 {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  max-width: 800px;
 }
 
 .game-container {
@@ -84,19 +87,38 @@ h6 {
   margin: 25px
 }
 
+
+.cell {
+  font-size: 70px;
+  align-items: center;
+  text-align: center;
+  align-content: center;
+  color: rgb(98, 96, 240);
+  background-color: white
+}
+
 .cell:nth-child(3n+2) {
-  border-right: 3px solid black;
-  border-left: 3px solid black;
+  border-right: 3px solid rgb(98, 96, 240);
+  border-left: 3px solid rgb(98, 96, 240);
 }
 
 .cell:nth-child(n+4):nth-child(-n+6) {
-  border-top: 3px solid black;
-  border-bottom: 3px solid black;
+  border-top: 3px solid rgb(98, 96, 240);
+  border-bottom: 3px solid rgb(98, 96, 240);
 }
 
 .players-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 200px;
+}
+
+.form-pop-up {
+  border-radius: 8px;
+  border: 2px solid rgb(98, 96, 240);
+  color: rgb(98, 96, 240);
+  background-color: rgb(255, 255, 255, 0.95);
 }
 
 .mark-choice {
@@ -115,17 +137,19 @@ form>p {
   padding-top: 20px;
 }
 
-.btn {
-  width: 94px;
-  border-radius: 12px;
-  border: 1px solid black;
-}
 
 .p1-box,
 .p2-box {
-  width: 100px;
+  width: 100%;
+  max-width: 146.815px;
+  color: rgb(98, 96, 240);
+  font-size: 18px;
 }
 
+.p1-para,
+.p2-para {
+  font-size: 26px;
+}
 
 .btn {
   cursor: pointer;
@@ -169,4 +193,42 @@ form>p {
 
 .btn:active {
   scale: 1;
+}
+
+.turn-popup,
+.win-popup {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgb(98, 96, 240, 0.8);;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 10px;
+  font-size: 18px;
+  text-align: center;
+  z-index: 1000;
+}
+
+
+.btn-form {
+  background-color: white;
+  color: rgb(98, 96, 240);
+  border: 1px solid rgb(98, 96, 240);
+  border-radius: 8px;
+  box-shadow: 0 0.2px 0 rgb(98, 96, 240);
+  transition: all 0.1s ease;
+  position: relative;
+}
+
+.btn-form:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 rgb(98, 96, 240);
+}
+
+input {
+  color: rgb(98, 96, 240);
+  border-radius: 5px;
+  border: 1px solid rgb(98, 96, 240);
 }

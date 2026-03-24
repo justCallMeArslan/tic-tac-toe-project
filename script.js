@@ -8,8 +8,13 @@ const p2Name = document.querySelector(".p2-para");
 const p2Score = document.querySelector(".p2-score");
 const p1Nickname = document.querySelector("#p1-nickname");
 const p2Nickname = document.querySelector("#p2-nickname");
+const p1Mark = document.querySelector(".p1-mark");
+const p2Mark = document.querySelector(".p2-mark");
 const x = document.querySelector(".mark-x");
 const o = document.querySelector(".mark-o");
+const resetBtn = document.querySelector(".reset-button");
+const turnPopup = document.querySelector(".turn-popup");
+const winPopup = document.querySelector(".win-popup");
 
 
 function Gameboard() { // values hardcoded intentionally for study project, keeping in 
@@ -134,10 +139,12 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
     let currentPlayer = players[0];
 
     // tracker of win counts (rounds)
+
     let scores = {
-        X: 0,
-        O: 0,
+        [playerOne.getMark()]: 0,
+        [playerTwo.getMark()]: 0,
     }
+
     let gameOver = false; // flag when game should or shouldn't allow makeMove
     let roundActive = true; // flag to allow/forbid moves after round ends
 
@@ -151,6 +158,11 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
     function getScores() {
         return { ...scores }; // shallow copy of scores
     }
+
+    function getPlayers() {
+        return [...players];
+    }
+
     // attmempting to place mark,
     function makeMove(index) {
 
@@ -232,12 +244,13 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
         roundActive = true;
         currentPlayer = Math.random() > 0.5 ? players[0] : players[1]; // after first 
         // round randomize first player
+        showTurnPopup(); // to notify what player has a turn
     }
 
     function resetGame() { // staged for UI game reset (probably merger New Game button functionality)
         gameOver = false;
-        scores.X = 0;
-        scores.O = 0;
+        scores[playerOne.getMark()] = 0;
+        scores[playerTwo.getMark()] = 0;
         resetRound();
     }
 
@@ -245,7 +258,7 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
         return board;
     }
 
-    return { getCurrentPlayer, getScores, makeMove, resetGame, resetRound, getBoard }
+    return { getCurrentPlayer, getScores, makeMove, resetGame, resetRound, getBoard, getPlayers }
 
 }
 
@@ -269,6 +282,20 @@ function renderBoard() {
     })
 }
 
+function renderScore() {
+    const scores = game.getScores();
+
+    p1Score.textContent = `Rounds won: ${scores[game.getPlayers()[0].getMark()]}`; // checking first 
+    //wha player and then what mark used 
+    p2Score.textContent = `Rounds won: ${scores[game.getPlayers()[1].getMark()]}`;
+}
+
+function renderMark() {
+    p1Mark.textContent = `Player #1 mark: ${game.getPlayers()[0].getMark()}`;
+    p2Mark.textContent = `Player #2 mark: ${game.getPlayers()[1].getMark()}`;
+
+}
+
 
 cells.forEach(cell => {
     cell.addEventListener("click", () => {
@@ -281,6 +308,7 @@ cells.forEach(cell => {
 
         if (move.type === "ROUND_ENDED") { // controlled by roundActive flag
             game.resetRound();
+            highlightCurrentPlayerNickname();
             renderBoard();
             return;
         }
@@ -289,27 +317,28 @@ cells.forEach(cell => {
         if (move.type === "ROUND_WIN") { // render updated scores after round end
             renderScore();
         }
+        highlightCurrentPlayerNickname();
         handleResult(move)
-    })
+    });
 })
 
 
 function handleResult(result) {
     switch (result.type) {
         case "ROUND_WIN":
-            alert(`${result.nickname} won the round`);
+            alert(`${result.nickname} won the round!`);
             break;
         case "ROUND_TIE":
             alert("Round tied!");
             break;
         case "MATCH_WIN":
-            alert(`${result.nickname} is the absolute WINNER!`);
+            showWinPopup(result.nickname);
             break;
         case "INVALID_MOVE":
-            console.log("Invalid move");
+            console.log("Invalid move.");
             break;
         case "ROUND_ENDED":
-            console.log("No moves allowed until reset");
+            console.log("No moves allowed until reset!");
             break;
         case "MATCH_ENDED":
             console.log("Start new game!");
@@ -331,8 +360,8 @@ o.addEventListener("click", () => {
 form.addEventListener("submit", (e) => {
     e.preventDefault(); // stop page reload on background (on form button click)
 
-    const nicknameP1 = p1Nickname.value.trim(); // getting p1 nickname and trim spaces (start and end)
-    const nicknameP2 = p2Nickname.value.trim();
+    const nicknameP1 = p1Nickname.value.toUpperCase().trim(); // getting p1 nickname and trim spaces (start and end)
+    const nicknameP2 = p2Nickname.value.toUpperCase().trim();
 
 
     if (!selectedMark) {
@@ -352,23 +381,51 @@ form.addEventListener("submit", (e) => {
 
     game = newGame; // changing game state from null to PLAYING
 
-    p1Name.textContent = `P1 nickname: ${nicknameP1}`;
-    p2Name.textContent = `P2 nickname: ${nicknameP2}`;
-
-
-    renderBoard(); // shows clean new board  
+    p1Name.textContent = `${nicknameP1}`;
+    p2Name.textContent = `${nicknameP2}`;
+    renderBoard(); // shows clean new board 
+    renderMark();
+    highlightCurrentPlayerNickname();
     modal.close(); // close modal after submission
+
 })
 
-function renderScore() {
-    const scores = game.getScores();
 
-    p1Score.textContent = `Rounds won: ${scores.X}`;
-    p2Score.textContent = `Rounds won: ${scores.O}`;
+function resetUI() {
+    resetBtn.addEventListener("click", () => {
+        game.resetGame();
+        renderBoard();
+        renderScore();
+        renderMark();
+        return;
+    })
 }
-
-
+resetUI();
 
 newGameBtn.addEventListener('click', function () {
     modal.showModal();
 })
+
+function showTurnPopup() {
+    const playerInGame = game.getCurrentPlayer();
+    turnPopup.textContent = `${playerInGame.getNickname()} starts next round!`;
+    turnPopup.style.display = "block";
+    setTimeout(() => {
+        turnPopup.style.display = "none";
+    }, 2000);
+};
+
+function showWinPopup(winnersNickname) {
+    winPopup.textContent = `${winnersNickname} is the ABSOLUTE winner!!`;
+    winPopup.style.display = "block";
+    winPopup.addEventListener("click", () => {
+        winPopup.style.display = "none";
+    }, { once: true })
+};
+
+function highlightCurrentPlayerNickname() {
+    const current = game.getCurrentPlayer().getNickname();
+    p1Name.style.fontWeight = game.getPlayers()[0].getNickname() === current ? "bold" : "normal";
+    p2Name.style.fontWeight = game.getPlayers()[1].getNickname() === current ? "bold" : "normal";
+};
+
