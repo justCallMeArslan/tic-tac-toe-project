@@ -23,6 +23,12 @@ body {
   flex-direction: column;
   align-items: center;
   background-color: white;
+  font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  
+
 }
 
 img,
@@ -98,13 +104,13 @@ h6 {
 }
 
 .cell:nth-child(3n+2) {
-  border-right: 3px solid rgb(98, 96, 240);
-  border-left: 3px solid rgb(98, 96, 240);
+  border-right: 4px solid rgb(98, 96, 240);
+  border-left: 4px solid rgb(98, 96, 240);
 }
 
 .cell:nth-child(n+4):nth-child(-n+6) {
-  border-top: 3px solid rgb(98, 96, 240);
-  border-bottom: 3px solid rgb(98, 96, 240);
+  border-top: 4px solid rgb(98, 96, 240);
+  border-bottom: 4px solid rgb(98, 96, 240);
 }
 
 .players-container {
@@ -141,7 +147,7 @@ form>p {
 .p1-box,
 .p2-box {
   width: 100%;
-  max-width: 146.815px;
+  max-width: 150px;
   color: rgb(98, 96, 240);
   font-size: 18px;
 }
@@ -163,7 +169,7 @@ form>p {
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
   overflow: hidden;
-  max-width: 120px;
+  max-width: 130px;
   width: 100%;
 }
 
@@ -202,7 +208,8 @@ form>p {
   top: 20%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgb(98, 96, 240, 0.8);;
+  background-color: rgb(98, 96, 240, 0.8);
+  ;
   color: white;
   padding: 15px 25px;
   border-radius: 10px;
