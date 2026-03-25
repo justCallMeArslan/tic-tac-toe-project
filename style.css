@@ -75,6 +75,11 @@ h6 {
   isolation: isolate;
 }
 
+h1 {
+  font-size: 48px;
+  color: rgb(98, 96, 240);
+}
+
 .main-container {
   display: flex;
   justify-content: center;
@@ -171,6 +176,7 @@ form>p {
   overflow: hidden;
   max-width: 130px;
   width: 100%;
+  margin-top: 10px;
 }
 
 .btn::before {
@@ -240,10 +246,6 @@ input {
 }
 
 
-/* your current CSS (unchanged) */
-
-
-/* ✅ ADD THIS AT THE VERY END */
 @media (max-width: 600px) {
   .main-container {
     flex-direction: column;
