@@ -263,10 +263,10 @@ cells.forEach(cell => {
 function handleResult(result) {
     switch (result.type) {
         case "ROUND_WIN":
-            alert(`${result.nickname} won the round! Click on any cell to continue.`);
+            alert(`${result.nickname} won the round!\n\nClick on any cell to continue.`);
             break;
         case "ROUND_TIE":
-            alert("Round tied! Click on any cell to continue.");
+            alert("Round tied!\n\nClick on any cell to continue.");
             break;
         case "MATCH_WIN":
             showWinPopup(result.nickname);
