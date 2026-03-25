@@ -17,63 +17,74 @@ const turnPopup = document.querySelector(".turn-popup");
 const winPopup = document.querySelector(".win-popup");
 
 
-function Gameboard() {
+function Gameboard() { // values hardcoded intentionally for study project, keeping in 
+    // mind refactoring later for dynamic
     const cols = 3;
     const rows = 3;
 
-    let board = Array(cols * rows).fill("");
+    let board = Array(cols * rows).fill(""); // fill the grid of the game 3x3
 
     function resetBoard() {
-        board.fill("");
+        board.fill(""); // resets grid to initial state
     }
 
     function placeMark(index, mark) {
+        //adding validation from invalid index e.g {100, "X"}
         if (index < 0 || index >= board.length) {
             return {
                 type: "ERROR",
                 reason: "INVALID_INPUT"
             }
         }
+        // adding mark validation for "X" and "O" only allowed (will be deleted after DDM)
         if (mark !== "X" && mark !== "O") {
             return {
                 type: "ERROR",
                 reason: "INVALID_INPUT"
             }
         }
+        // adding validation to prevent marking already marked cell
         if (board[index] !== "") {
             return {
                 type: "ERROR",
                 reason: "INVALID_MOVE"
             }
         }
-        board[index] = mark;
+        board[index] = mark;  // all validation passed, mark being placed
         return {
             type: "SUCCESS",
         }
     }
+    // checking for grid status isFull or Not?
     function isFull() {
-        return !board.includes("");
+        return !board.includes(""); // return true, when there is no empty cells left.
     }
+    // getter for grid
     function getGrid() {
-        return [...board];
+        return [...board]; // creates mutated shallow copy of board
     }
-    return { placeMark, getGrid, resetBoard, isFull };
+    return { placeMark, getGrid, resetBoard, isFull }; // returns for usage in gameController
 }
-function validateNickname(nickname) {
+
+
+function validateNickname(nickname) { //function to check 
     return /^[a-zA-Z\s]+$/.test(nickname);
 }
+
 function Player(mark, nickname) {
-    function getMark() {
+    function getMark() { // closure for returning mark of player
         return mark
     }
-    function getNickname() {
+    function getNickname() { // closure for returning name of player
         return nickname
     }
 
     return { getMark, getNickname };
 }
+
 function evaluateRound(board) {
     const grid = board.getGrid();
+
     const winningLines = [
         //rows 
         [0, 1, 2],
@@ -91,6 +102,7 @@ function evaluateRound(board) {
     ];
 
     for (const [a, b, c] of winningLines) {
+        // comparing a, b, c that they are not empty and the same X or O
         if (grid[a] && grid[a] === grid[b]
             && grid[a] === grid[c]) {
             return {
@@ -109,6 +121,8 @@ function evaluateRound(board) {
         }
     }
 }
+
+
 function gameController(mark1, mark2, nicknameP1, nicknameP2) {
     const board = Gameboard();
 
@@ -118,57 +132,71 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
             reason: "Please, use only latin letters, no symbols or numbers allowed"
         }
     }
+
     const playerOne = Player(mark1, nicknameP1);
     const playerTwo = Player(mark2, nicknameP2);
     const players = [playerOne, playerTwo];
     let currentPlayer = players[0];
 
+    // tracker of win counts (rounds)
+
     let scores = {
         [playerOne.getMark()]: 0,
         [playerTwo.getMark()]: 0,
     }
-    let gameOver = false;
-    let roundActive = true;
+
+    let gameOver = false; // flag when game should or shouldn't allow makeMove
+    let roundActive = true; // flag to allow/forbid moves after round ends
 
     function switchPlayers() {
-        currentPlayer = currentPlayer === players[0] ? players[1] : players[0]
+        currentPlayer = currentPlayer === players[0] ? players[1] : players[0] // checks  
+        // what is player now (default is players[0]) and switches to opposite
     }
-    function getCurrentPlayer() {
+    function getCurrentPlayer() { // can be used in DOM / may remove if unused 
         return currentPlayer;
     }
     function getScores() {
-        return { ...scores };
+        return { ...scores }; // shallow copy of scores
     }
+
     function getPlayers() {
         return [...players];
     }
+
+    // attmempting to place mark,
     function makeMove(index) {
-        if (gameOver) {
+
+        if (gameOver) { // if true = match ended
             return {
                 type: "MATCH_ENDED"
             };
         }
 
-        if (!roundActive) {
+        if (!roundActive) { // if not true = false = round eded
             return {
                 type: "ROUND_ENDED"
             };
         }
 
+        //placing mark until success
         const result = board.placeMark(index, currentPlayer.getMark());
         if (result.type === "ERROR") {
             return result;
         }
 
+        // checking for winner
         const roundWinner = evaluateRound(board);
         if (roundWinner.type === "ROUND_WIN") {
             scores[roundWinner.winner] += 1;
-            roundActive = false;
+            roundActive = false; //end of round              
+            //check if match is won
             const matchWinner = evaluateMatch();
             if (matchWinner.type === "MATCH_WIN") {
                 gameOver = true;
-                return matchWinner;
+                return matchWinner; // will return evaluateMatch() return obj
             }
+
+            // return after Round win, UI decides reset (click to reset or some other behavior)
             return {
                 type: "ROUND_WIN",
                 mark: roundWinner.winner,
@@ -178,9 +206,11 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
         if (roundWinner.type === "ROUND_TIE") {
             roundActive = false;
             return {
-                type: "ROUND_TIE"
+                type: "ROUND_TIE" // UI event listener e.g. will click and reset (when needed)
             }
         }
+
+        // no winner, round in progress
         switchPlayers();
         return {
             type: "ROUND_PLAYING",
@@ -209,69 +239,90 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
         }
     }
 
-    function resetRound() {
+    function resetRound() { // reset function after round
         board.resetBoard();
         roundActive = true;
-        currentPlayer = Math.random() > 0.5 ? players[0] : players[1];
-        showTurnPopup();
+        currentPlayer = Math.random() > 0.5 ? players[0] : players[1]; // after first 
+        // round randomize first player
+        showTurnPopup(); // to notify what player has a turn
     }
 
-    function resetGame() {
+    function resetGame() { // staged for UI game reset (probably merger New Game button functionality)
         gameOver = false;
         scores[playerOne.getMark()] = 0;
         scores[playerTwo.getMark()] = 0;
         resetRound();
     }
 
-    function getBoard() {
+    function getBoard() { // to use in testing with grid printed
         return board;
     }
 
     return { getCurrentPlayer, getScores, makeMove, resetGame, resetRound, getBoard, getPlayers }
+
 }
+
+
+
 // DOM part
+
 let game = null;
+
 function renderBoard() {
-    if (game === null) {
+
+    if (game === null) { // if there is no game started - stop function
         return
     };
-    const grid = game.getBoard().getGrid();
+
+    const grid = game.getBoard().getGrid();  // reads data from on-going game grid
+
     cells.forEach(cell => {
-        const index = Number(cell.dataset.index);
-        cell.textContent = grid[index];
+        const index = Number(cell.dataset.index); // dataset is the way to get information from data-index
+        cell.textContent = grid[index]; // reflects grid in UI
     })
 }
+
 function renderScore() {
     const scores = game.getScores();
-    p1Score.textContent = `Rounds won: ${scores[game.getPlayers()[0].getMark()]}`;
+
+    p1Score.textContent = `Rounds won: ${scores[game.getPlayers()[0].getMark()]}`; // checking first 
+    //wha player and then what mark used 
     p2Score.textContent = `Rounds won: ${scores[game.getPlayers()[1].getMark()]}`;
 }
+
 function renderMark() {
     p1Mark.textContent = `Player #1 mark: ${game.getPlayers()[0].getMark()}`;
     p2Mark.textContent = `Player #2 mark: ${game.getPlayers()[1].getMark()}`;
+
 }
+
+
 cells.forEach(cell => {
     cell.addEventListener("click", () => {
         if (game === null) {
             return
         }
-        const index = Number(cell.dataset.index);
-        const move = game.makeMove(index);
 
-        if (move.type === "ROUND_ENDED") {
+        const index = Number(cell.dataset.index); // index which was clicked
+        const move = game.makeMove(index); // placing mark after recieving index of what pressed
+
+        if (move.type === "ROUND_ENDED") { // controlled by roundActive flag
             game.resetRound();
             highlightCurrentPlayerNickname();
             renderBoard();
             return;
         }
-        renderBoard();
-        if (move.type === "ROUND_WIN") {
+
+        renderBoard(); // to update UI after each move made
+        if (move.type === "ROUND_WIN") { // render updated scores after round end
             renderScore();
         }
         highlightCurrentPlayerNickname();
         handleResult(move)
     });
 })
+
+
 function handleResult(result) {
     switch (result.type) {
         case "ROUND_WIN":
@@ -294,21 +345,30 @@ function handleResult(result) {
             break;
     }
 }
+
+
 let selectedMark = null;
+
 x.addEventListener("click", () => {
     selectedMark = "X";
 });
+
 o.addEventListener("click", () => {
     selectedMark = "O";
 });
+
 form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const nicknameP1 = p1Nickname.value.toUpperCase().trim();
+    e.preventDefault(); // stop page reload on background (on form button click)
+
+    const nicknameP1 = p1Nickname.value.toUpperCase().trim(); // getting p1 nickname and trim spaces (start and end)
     const nicknameP2 = p2Nickname.value.toUpperCase().trim();
+
+
     if (!selectedMark) {
         alert("Please choose X or O before submitting!");
         return;
     };
+
     const mark1 = selectedMark;
     const mark2 = mark1 === "X" ? "O" : "X";
 
@@ -318,15 +378,19 @@ form.addEventListener("submit", (e) => {
         alert(newGame.reason);
         return;
     }
-    game = newGame;
+
+    game = newGame; // changing game state from null to PLAYING
+
     p1Name.textContent = `${nicknameP1}`;
     p2Name.textContent = `${nicknameP2}`;
-    renderBoard();
+    renderBoard(); // shows clean new board 
     renderMark();
     highlightCurrentPlayerNickname();
-    modal.close();
+    modal.close(); // close modal after submission
 
 })
+
+
 function resetUI() {
     resetBtn.addEventListener("click", () => {
         game.resetGame();
@@ -337,9 +401,11 @@ function resetUI() {
     })
 }
 resetUI();
+
 newGameBtn.addEventListener('click', function () {
     modal.showModal();
 })
+
 function showTurnPopup() {
     const playerInGame = game.getCurrentPlayer();
     turnPopup.textContent = `${playerInGame.getNickname()} starts next round!`;
@@ -348,6 +414,7 @@ function showTurnPopup() {
         turnPopup.style.display = "none";
     }, 2000);
 };
+
 function showWinPopup(winnersNickname) {
     winPopup.textContent = `${winnersNickname} is the ABSOLUTE winner!!`;
     winPopup.style.display = "block";
@@ -355,6 +422,7 @@ function showWinPopup(winnersNickname) {
         winPopup.style.display = "none";
     }, { once: true })
 };
+
 function highlightCurrentPlayerNickname() {
     const current = game.getCurrentPlayer().getNickname();
     p1Name.style.fontWeight = game.getPlayers()[0].getNickname() === current ? "bold" : "normal";

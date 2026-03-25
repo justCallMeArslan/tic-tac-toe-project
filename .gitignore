@@ -1,0 +1,4 @@
+#ignore all files used for development
+pseudo.md
+scriptCommented.js
+testing.js
