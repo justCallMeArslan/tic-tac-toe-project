@@ -263,10 +263,10 @@ cells.forEach(cell => {
 function handleResult(result) {
     switch (result.type) {
         case "ROUND_WIN":
-            alert(`${result.nickname} won the round!`);
+            alert(`${result.nickname} won the round! Click on any cell to continue.`);
             break;
         case "ROUND_TIE":
-            alert("Round tied!");
+            alert("Round tied! Click on any cell to continue.");
             break;
         case "MATCH_WIN":
             showWinPopup(result.nickname);
@@ -337,7 +337,7 @@ function showTurnPopup() {
     }, 2000);
 };
 function showWinPopup(winnersNickname) {
-    winPopup.textContent = `${winnersNickname} is the ABSOLUTE winner!!`;
+    winPopup.textContent = `${winnersNickname} is the ABSOLUTE winner!!!`;
     winPopup.style.display = "block";
     winPopup.addEventListener("click", () => {
         winPopup.style.display = "none";
