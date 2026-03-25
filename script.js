@@ -16,7 +16,6 @@ const resetBtn = document.querySelector(".reset-button");
 const turnPopup = document.querySelector(".turn-popup");
 const winPopup = document.querySelector(".win-popup");
 
-
 function Gameboard() {
     const cols = 3;
     const rows = 3;
@@ -69,7 +68,6 @@ function Player(mark, nickname) {
     function getNickname() {
         return nickname
     }
-
     return { getMark, getNickname };
 }
 function evaluateRound(board) {
@@ -89,13 +87,12 @@ function evaluateRound(board) {
         [0, 4, 8],
         [2, 4, 6]
     ];
-
     for (const [a, b, c] of winningLines) {
         if (grid[a] && grid[a] === grid[b]
             && grid[a] === grid[c]) {
             return {
                 type: "ROUND_WIN",
-                winner: grid[a],
+                winner: grid[a]
             }
         }
     }
@@ -111,7 +108,6 @@ function evaluateRound(board) {
 }
 function gameController(mark1, mark2, nicknameP1, nicknameP2) {
     const board = Gameboard();
-
     if (!validateNickname(nicknameP1) || !validateNickname(nicknameP2)) {
         return {
             type: "INVALID_PLAYER",
@@ -148,18 +144,15 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
                 type: "MATCH_ENDED"
             };
         }
-
         if (!roundActive) {
             return {
                 type: "ROUND_ENDED"
             };
         }
-
         const result = board.placeMark(index, currentPlayer.getMark());
         if (result.type === "ERROR") {
             return result;
         }
-
         const roundWinner = evaluateRound(board);
         if (roundWinner.type === "ROUND_WIN") {
             scores[roundWinner.winner] += 1;
@@ -186,9 +179,7 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
             type: "ROUND_PLAYING",
             nextPlayer: currentPlayer.getNickname()
         };
-
     }
-
     function evaluateMatch() {
         if (scores[playerOne.getMark()] === 3) {
             return {
@@ -208,21 +199,18 @@ function gameController(mark1, mark2, nicknameP1, nicknameP2) {
             }
         }
     }
-
     function resetRound() {
         board.resetBoard();
         roundActive = true;
         currentPlayer = Math.random() > 0.5 ? players[0] : players[1];
         showTurnPopup();
     }
-
     function resetGame() {
         gameOver = false;
         scores[playerOne.getMark()] = 0;
         scores[playerTwo.getMark()] = 0;
         resetRound();
     }
-
     function getBoard() {
         return board;
     }
